@@ -8,22 +8,23 @@ namespace Casa_Purita_RentalManagementSystem.Models
 
         [Required]
         [Display(Name = "Full Name")]
-        public string FullName { get; set; }
-
-        [Required]
-        [Phone]
-        public string Phone { get; set; }
-
-        [Required]
-        public string Address { get; set; }
-
-        [Required]
-        [Display(Name = "ID Number")]
-        public string IdNumber { get; set; }
+        public string FullName { get; set; } = string.Empty;
 
         [Required]
         [EmailAddress]
-        public string Email { get; set; }
+        public string Email { get; set; } = string.Empty;
+
+        [Required]
+        [Phone]
+        public string Phone { get; set; } = string.Empty;
+
+        [Display(Name = "Emergency Contact")]
+        public string? EmergencyContact { get; set; }
+
+        public string? Address { get; set; }
+
+        [Display(Name = "ID Number")]
+        public string? GovernmentId { get; set; }
 
         public DateTime CreatedAt { get; set; } = DateTime.Now;
 

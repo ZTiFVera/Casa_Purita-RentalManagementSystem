@@ -2,23 +2,12 @@
 
 namespace Casa_Purita_RentalManagementSystem.Models
 {
-    public class User
+     public class User
     {
         public int Id { get; set; }
-
-        [Required]
-        [Display(Name = "Full Name")]
-        public string FullName { get; set; }
-
-        [Required]
-        [EmailAddress]
-        public string Email { get; set; }
-
-        [Required]
-        public string PasswordHash { get; set; }
-
+        public string FullName { get; set; } = string.Empty;
+        public string Email { get; set; } = string.Empty;
         public string Role { get; set; } = "Admin";
-
         public DateTime CreatedAt { get; set; } = DateTime.Now;
     }
 }

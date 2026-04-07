@@ -1,0 +1,93 @@
+﻿@model IEnumerable<Tenant>
+@{
+    ViewData["Title"] = "Tenants";
+}
+
+<div class="page-header">
+    <h4><i class="fa fa-users"></i> Tenant Management</h4>
+    <a asp-action="Create" class="btn-primary-cp">
+        <i class="fa fa-plus"></i> Add Tenant
+    </a>
+</div>
+
+<!-- Search Bar -->
+<div class="filter-bar">
+    <form method="get" class="d-flex gap-2 flex-wrap">
+        <input type="text" name="search" value="@ViewBag.Search"
+               class="form-control cp-search"
+               placeholder="Search by name or email..." />
+        <button type="submit" class="btn-primary-cp">
+            <i class="fa fa-search"></i> Search
+        </button>
+        <a asp-action="Index" class="btn-secondary-cp">
+            <i class="fa fa-rotate"></i> Reset
+        </a>
+    </form>
+</div>
+
+<!-- Tenants Table -->
+<div class="table-responsive mt-3">
+    @if (Model.Any())
+    {
+        <table class="cp-table">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Full Name</th>
+                    <th>Email</th>
+                    <th>Phone</th>
+                    <th>Address</th>
+                    <th>Date Registered</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @{
+                    int i = 1;
+                }
+                @foreach (var tenant in Model)
+                {
+                    <tr>
+                        <td>@i++</td>
+                        <td>
+                            <div class="tenant-name">
+                                <div class="tenant-avatar">
+                                    @tenant.FirstName@tenant.LastName
+                                </div>
+                                @tenant.FullName
+                            </div>
+                        </td>
+                        <td>@tenant.Email</td>
+                        <td>@(tenant.Phone ?? "N/A")</td>
+                        <td>@(tenant.Address ?? "N/A")</td>
+                        <td>@tenant.DateRegistered.ToString("MMM dd, yyyy")</td>
+                        <td>
+                            <div class="action-btns">
+                                <a asp-action="Details" asp-route-id="@tenant.Id"
+                                   class="btn-sm-action">
+                                    <i class="fa fa-eye"></i>
+                                </a>
+                                <a asp-action="Edit" asp-route-id="@tenant.Id"
+                                   class="btn-sm-edit">
+                                    <i class="fa fa-pen"></i>
+                                </a>
+                                <a asp-action="Delete" asp-route-id="@tenant.Id"
+                                   class="btn-sm-delete">
+                                    <i class="fa fa-trash"></i>
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <div class="empty-state">
+            <i class="fa fa-users"></i>
+            <p>No tenants found.</p>
+            <a asp-action="Create" class="btn-primary-cp">Add First Tenant</a>
+        </div>
+    }
+</div>

@@ -1,0 +1,87 @@
+﻿@model Room
+@{
+    ViewData["Title"] = "Room Details";
+}
+
+<div class="form-page">
+    <div class="form-card">
+        <div class="form-card-header">
+            <i class="fa fa-door-open"></i> Room @Model.RoomNumber Details
+        </div>
+        <div class="form-card-body">
+            <div class="detail-grid">
+                <div class="detail-item">
+                    <span class="detail-label">Room Number</span>
+                    <span class="detail-value">@Model.RoomNumber</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Type</span>
+                    <span class="detail-value">@Model.Type</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Monthly Rent</span>
+                    <span class="detail-value">₱@Model.MonthlyRent.ToString("N0")</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Floor</span>
+                    <span class="detail-value">@Model.Floor</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Status</span>
+                    <span class="detail-value">
+                        <span class="@(Model.IsAvailable ? "badge-available" : "badge-occupied")">
+                            @(Model.IsAvailable ? "Available" : "Occupied")
+                        </span>
+                    </span>
+                </div>
+                <div class="detail-item full-width">
+                    <span class="detail-label">Description</span>
+                    <span class="detail-value">@(Model.Description ?? "N/A")</span>
+                </div>
+            </div>
+
+            @if (Model.Contracts.Any())
+            {
+                <h6 class="mt-4 section-title">
+                    <i class="fa fa-file-contract"></i> Contract History
+                </h6>
+                <div class="table-responsive">
+                    <table class="cp-table">
+                        <thead>
+                            <tr>
+                                <th>Tenant</th>
+                                <th>Start Date</th>
+                                <th>End Date</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var c in Model.Contracts)
+                            {
+                                <tr>
+                                    <td>@c.Tenant?.FullName</td>
+                                    <td>@c.StartDate.ToString("MMM dd, yyyy")</td>
+                                    <td>@c.EndDate.ToString("MMM dd, yyyy")</td>
+                                    <td>
+                                        <span class="status-badge status-@c.Status.ToLower()">
+                                            @c.Status
+                                        </span>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+
+            <div class="form-actions mt-3">
+                <a asp-action="Edit" asp-route-id="@Model.Id" class="btn-primary-cp">
+                    <i class="fa fa-pen"></i> Edit
+                </a>
+                <a asp-action="Index" class="btn-secondary-cp">
+                    <i class="fa fa-arrow-left"></i> Back
+                </a>
+            </div>
+        </div>
+    </div>
+</div>

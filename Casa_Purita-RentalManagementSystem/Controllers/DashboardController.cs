@@ -1,52 +1,57 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Casa_Purita_RentalManagementSystem.Data;
+using Casa_Purita_RentalManagementSystem.Models.ViewModels;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Casa_Purita_RentalManagementSystem.Data;
 
 namespace Casa_Purita_RentalManagementSystem.Controllers
 {
+
+    [Authorize]
     public class DashboardController : Controller
     {
-        private readonly AppDbContext _context;
+        private readonly ApplicationDbContext _context;
 
-        public DashboardController(AppDbContext context)
+        public DashboardController(ApplicationDbContext context)
         {
             _context = context;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            if (HttpContext.Session.GetString("UserId") == null)
-                return RedirectToAction("Login", "Auth");
+            var rooms = await _context.Rooms.ToListAsync();
+            var tenants = await _context.Tenants.ToListAsync();
+            var contracts = await _context.Contracts
+                                .Include(c => c.Tenant)
+                                .Include(c => c.Room)
+                                .ToListAsync();
 
-            var today = DateTime.Today;
+            var expiredList = contracts.Where(c => c.IsExpired).ToList();
+            foreach (var c in expiredList)
+            {
+                c.Status = "Expired";
+                var room = rooms.FirstOrDefault(r => r.Id == c.RoomId);
+                if (room != null) room.IsAvailable = true;
+            }
+            if (expiredList.Any())
+                await _context.SaveChangesAsync();
 
-            // Room Stats
-            ViewBag.TotalRooms = _context.Rooms.Count();
-            ViewBag.AvailableRooms = _context.Rooms.Count(r => r.Status == "Available");
-            ViewBag.OccupiedRooms = _context.Rooms.Count(r => r.Status == "Occupied");
-            ViewBag.MaintenanceRooms = _context.Rooms.Count(r => r.Status == "Maintenance");
+            var activeContracts = contracts.Where(c => c.Status == "Active").ToList();
+            var expiringContracts = contracts.Where(c => c.IsExpiringSoon).ToList();
 
-            // Tenant & Contract Stats
-            ViewBag.TotalTenants = _context.Tenants.Count();
-            ViewBag.ActiveContracts = _context.Contracts.Count(c => c.Status == "Active");
-            ViewBag.ExpiredContracts = _context.Contracts.Count(c => c.Status == "Expired");
+            var vm = new DashboardViewModel
+            {
+                TotalRooms = rooms.Count,
+                OccupiedRooms = rooms.Count(r => !r.IsAvailable),
+                AvailableRooms = rooms.Count(r => r.IsAvailable),
+                TotalTenants = tenants.Count,
+                ActiveContracts = activeContracts.Count,
+                ExpiringContracts = expiringContracts.Count,
+                MonthlyRevenue = activeContracts.Sum(c => c.MonthlyRent),
+                ExpiringContractsList = expiringContracts
+            };
 
-            // Contracts expiring within 30 days
-            ViewBag.ExpiringContracts = _context.Contracts
-                .Include(c => c.Tenant)
-                .Include(c => c.Room)
-                .Where(c => c.Status == "Active" &&
-                            c.EndDate >= today &&
-                            c.EndDate <= today.AddDays(30))
-                .ToList();
-
-            // 5 most recently added tenants
-            ViewBag.RecentTenants = _context.Tenants
-                .OrderByDescending(t => t.CreatedAt)
-                .Take(5)
-                .ToList();
-
-            return View();
+            return View(vm);
         }
     }
 }

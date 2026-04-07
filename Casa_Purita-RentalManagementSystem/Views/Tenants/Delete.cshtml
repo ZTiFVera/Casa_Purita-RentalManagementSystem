@@ -1,0 +1,46 @@
+﻿@model Tenant
+@{
+    ViewData["Title"] = "Delete Tenant";
+}
+
+<div class="form-page">
+    <div class="form-card">
+        <div class="form-card-header danger">
+            <i class="fa fa-trash"></i> Delete Tenant
+        </div>
+        <div class="form-card-body">
+            <div class="delete-warning">
+                <i class="fa fa-exclamation-triangle"></i>
+                Are you sure you want to delete
+                <strong>@Model.FullName</strong>?
+                This action cannot be undone.
+            </div>
+            <div class="detail-grid mt-3">
+                <div class="detail-item">
+                    <span class="detail-label">Full Name</span>
+                    <span class="detail-value">@Model.FullName</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Email</span>
+                    <span class="detail-value">@Model.Email</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Phone</span>
+                    <span class="detail-value">@(Model.Phone ?? "N/A")</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Date Registered</span>
+                    <span class="detail-value">
+                        @Model.DateRegistered.ToString("MMM dd, yyyy")
+                    </span>
+                </div>
+            </div>
+            <form asp-action="Delete" method="post" class="form-actions mt-3">
+                <button type="submit" class="btn-danger-cp">
+                    <i class="fa fa-trash"></i> Yes, Delete
+                </button>
+                <a asp-action="Index" class="btn-secondary-cp">
+                    <i class="fa fa-arrow-left"></i> Cancel
+                </a>
+            </form>
+        </div>

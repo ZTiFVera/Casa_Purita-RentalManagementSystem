@@ -1,0 +1,61 @@
+﻿@model Tenant
+@{
+    ViewData["Title"] = "Add Tenant";
+}
+
+<div class="form-page">
+    <div class="form-card">
+        <div class="form-card-header">
+            <i class="fa fa-user-plus"></i> Add New Tenant
+        </div>
+        <div class="form-card-body">
+            <form asp-action="Create" method="post">
+                <div asp-validation-summary="ModelOnly" class="auth-error mb-3"></div>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="FirstName" class="form-label"></label>
+                        <input asp-for="FirstName" class="form-control cp-input"
+                               placeholder="Enter first name" />
+                        <span asp-validation-for="FirstName" class="text-danger small"></span>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="LastName" class="form-label"></label>
+                        <input asp-for="LastName" class="form-control cp-input"
+                               placeholder="Enter last name" />
+                        <span asp-validation-for="LastName" class="text-danger small"></span>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="Email" class="form-label"></label>
+                        <input asp-for="Email" class="form-control cp-input"
+                               placeholder="Enter email address" />
+                        <span asp-validation-for="Email" class="text-danger small"></span>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="Phone" class="form-label"></label>
+                        <input asp-for="Phone" class="form-control cp-input"
+                               placeholder="Enter phone number" />
+                        <span asp-validation-for="Phone" class="text-danger small"></span>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="EmergencyContact" class="form-label"></label>
+                        <input asp-for="EmergencyContact" class="form-control cp-input"
+                               placeholder="Emergency contact name & number" />
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="Address" class="form-label"></label>
+                        <input asp-for="Address" class="form-control cp-input"
+                               placeholder="Enter home address" />
+                    </div>
+                </div>
+                <div class="form-actions">
+                    <button type="submit" class="btn-primary-cp">
+                        <i class="fa fa-save"></i> Save Tenant
+                    </button>
+                    <a asp-action="Index" class="btn-secondary-cp">
+                        <i class="fa fa-arrow-left"></i> Cancel
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

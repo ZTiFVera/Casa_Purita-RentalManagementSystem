@@ -1,0 +1,77 @@
+﻿@model Contract
+@{
+    ViewData["Title"] = "Contract Details";
+}
+
+<div class="form-page">
+    <div class="form-card">
+        <div class="form-card-header">
+            <i class="fa fa-file-contract"></i> Contract #@Model.Id Details
+        </div>
+        <div class="form-card-body">
+            <div class="detail-grid">
+                <div class="detail-item">
+                    <span class="detail-label">Tenant</span>
+                    <span class="detail-value">@Model.Tenant?.FullName</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Room</span>
+                    <span class="detail-value">Room @Model.Room?.RoomNumber (@Model.Room?.Type)</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Start Date</span>
+                    <span class="detail-value">@Model.StartDate.ToString("MMM dd, yyyy")</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">End Date</span>
+                    <span class="detail-value">@Model.EndDate.ToString("MMM dd, yyyy")</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Monthly Rent</span>
+                    <span class="detail-value">₱@Model.MonthlyRent.ToString("N0")</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Status</span>
+                    <span class="detail-value">
+                        <span class="status-badge status-@Model.Status.ToLower()">
+                            @Model.Status
+                        </span>
+                    </span>
+                </div>
+                <div class="detail-item full-width">
+                    <span class="detail-label">Notes</span>
+                    <span class="detail-value">@(Model.Notes ?? "N/A")</span>
+                </div>
+            </div>
+
+            @if (Model.IsExpiringSoon)
+            {
+                <div class="alert-expiring mt-3">
+                    <i class="fa fa-exclamation-triangle"></i>
+                    This contract is expiring in
+                    <strong>@((Model.EndDate - DateTime.Now).Days) days</strong>!
+                </div>
+            }
+
+            <div class="form-actions mt-3">
+                <a asp-action="Edit" asp-route-id="@Model.Id" class="btn-primary-cp">
+                    <i class="fa fa-pen"></i> Edit
+                </a>
+                @if (Model.Status == "Active")
+                {
+                    <form asp-action="Terminate" asp-route-id="@Model.Id"
+                          method="post" style="display:inline">
+                        @Html.AntiForgeryToken()
+                        <button type="submit" class="btn-warning-cp"
+                                onclick="return confirm('Are you sure you want to terminate this contract?')">
+                            <i class="fa fa-ban"></i> Terminate
+                        </button>
+                    </form>
+                }
+                <a asp-action="Index" class="btn-secondary-cp">
+                    <i class="fa fa-arrow-left"></i> Back
+                </a>
+            </div>
+        </div>
+    </div>
+</div>

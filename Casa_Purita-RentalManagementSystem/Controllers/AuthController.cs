@@ -1,74 +1,89 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Casa_Purita_RentalManagementSystem.Data;
+﻿using Casa_Purita_RentalManagementSystem.Data;
 using Casa_Purita_RentalManagementSystem.Models;
+using Casa_Purita_RentalManagementSystem.Models.ViewModels;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Casa_Purita_RentalManagementSystem.Controllers
 {
     public class AuthController : Controller
     {
-        private readonly AppDbContext _context;
+        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly SignInManager<ApplicationUser> _signInManager;
 
-        public AuthController(AppDbContext context)
+        public AuthController(
+            UserManager<ApplicationUser> userManager,
+            SignInManager<ApplicationUser> signInManager)
         {
-            _context = context;
+            _userManager = userManager;
+            _signInManager = signInManager;
         }
 
-        // GET: /Auth/Register
-        public IActionResult Register() => View();
+        [HttpGet]
+        public IActionResult Login()
+        {
+            if (User.Identity!.IsAuthenticated)
+                return RedirectToAction("Index", "Dashboard");
+            return View();
+        }
 
-        // POST: /Auth/Register
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Register(string fullName, string email, string password)
+        public async Task<IActionResult> Login(LoginViewModel model)
         {
-            if (_context.Users.Any(u => u.Email == email))
-            {
-                ViewBag.Error = "Email already exists.";
-                return View();
-            }
+            if (!ModelState.IsValid) return View(model);
 
-            var user = new User
+            var result = await _signInManager.PasswordSignInAsync(
+                model.Email, model.Password, model.RememberMe, lockoutOnFailure: false);
+
+            if (result.Succeeded)
+                return RedirectToAction("Index", "Dashboard");
+
+            ModelState.AddModelError("", "Invalid email or password.");
+            return View(model);
+        }
+
+        [HttpGet]
+        public IActionResult Register()
+        {
+            if (User.Identity!.IsAuthenticated)
+                return RedirectToAction("Index", "Dashboard");
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Register(RegisterViewModel model)
+        {
+            if (!ModelState.IsValid) return View(model);
+
+            var user = new ApplicationUser
             {
-                FullName = fullName,
-                Email = email,
-                PasswordHash = BCrypt.Net.BCrypt.HashPassword(password)
+                UserName = model.Email,
+                Email = model.Email,
+                FullName = model.FullName
             };
 
-            _context.Users.Add(user);
-            _context.SaveChanges();
+            var result = await _userManager.CreateAsync(user, model.Password);
 
-            TempData["Success"] = "Registration successful. Please log in.";
-            return RedirectToAction("Login");
-        }
-
-        // GET: /Auth/Login
-        public IActionResult Login() => View();
-
-        // POST: /Auth/Login
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public IActionResult Login(string email, string password)
-        {
-            var user = _context.Users.FirstOrDefault(u => u.Email == email);
-
-            if (user == null || !BCrypt.Net.BCrypt.Verify(password, user.PasswordHash))
+            if (result.Succeeded)
             {
-                ViewBag.Error = "Invalid email or password.";
-                return View();
+                await _signInManager.SignInAsync(user, isPersistent: false);
+                return RedirectToAction("Index", "Dashboard");
             }
 
-            HttpContext.Session.SetString("UserId", user.Id.ToString());
-            HttpContext.Session.SetString("UserName", user.FullName);
-            HttpContext.Session.SetString("UserRole", user.Role);
+            foreach (var error in result.Errors)
+                ModelState.AddModelError("", error.Description);
 
-            return RedirectToAction("Index", "Dashboard");
+            return View(model);
         }
 
-        // GET: /Auth/Logout
-        public IActionResult Logout()
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Logout()
         {
-            HttpContext.Session.Clear();
-            return RedirectToAction("Login");
+            await _signInManager.SignOutAsync();
+            return RedirectToAction("Login", "Auth");
         }
     }
 }

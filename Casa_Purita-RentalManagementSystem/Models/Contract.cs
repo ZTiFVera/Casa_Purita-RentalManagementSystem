@@ -1,44 +1,54 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Casa_Purita_RentalManagementSystem.Models
 {
-    public enum ContractStatus { Active, Expired, Terminated }
-
     public class Contract
     {
         public int Id { get; set; }
 
         [Required]
-        public int RoomId { get; set; }
-        public Room? Room { get; set; }
-
-        [Required]
+        [Display(Name = "Tenant")]
         public int TenantId { get; set; }
-        public Tenant? Tenant { get; set; }
 
         [Required]
-        [Display(Name = "Start Date")]
+        [Display(Name = "Room")]
+        public int RoomId { get; set; }
+
+        [Required]
         [DataType(DataType.Date)]
+        [Display(Name = "Start Date")]
         public DateTime StartDate { get; set; }
 
         [Required]
-        [Display(Name = "End Date")]
         [DataType(DataType.Date)]
+        [Display(Name = "End Date")]
         public DateTime EndDate { get; set; }
 
         [Required]
         [DataType(DataType.Currency)]
-        [Display(Name = "Monthly Rent")]
+        [Display(Name = "Monthly Rent (₱)")]
         public decimal MonthlyRent { get; set; }
 
-        [DataType(DataType.Currency)]
-        [Display(Name = "Security Deposit")]
-        public decimal SecurityDeposit { get; set; }
+        [Display(Name = "Status")]
+        public string Status { get; set; } = "Active";
 
-        public ContractStatus Status { get; set; } = ContractStatus.Active;
-
+        [Display(Name = "Notes")]
         public string? Notes { get; set; }
 
-        public DateTime CreatedAt { get; set; } = DateTime.Now;
+        [ForeignKey("TenantId")]
+        public Tenant? Tenant { get; set; }
+
+        [ForeignKey("RoomId")]
+        public Room? Room { get; set; }
+
+        public bool IsExpiringSoon =>
+            EndDate <= DateTime.Now.AddDays(30) &&
+            EndDate >= DateTime.Now &&
+            Status == "Active";
+
+        public bool IsExpired =>
+            EndDate < DateTime.Now && Status == "Active";
     }
+
 }

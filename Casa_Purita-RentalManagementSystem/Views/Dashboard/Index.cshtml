@@ -1,0 +1,122 @@
+﻿@model DashboardViewModel
+@{
+    ViewData["Title"] = "Dashboard";
+}
+
+<div class="dashboard-grid">
+
+    <!-- Stat Cards -->
+    <div class="stat-card">
+        <div class="stat-icon blue"><i class="fa fa-door-open"></i></div>
+        <div class="stat-info">
+            <span class="stat-value">@Model.TotalRooms</span>
+            <span class="stat-label">Total Rooms</span>
+        </div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-icon green"><i class="fa fa-check-circle"></i></div>
+        <div class="stat-info">
+            <span class="stat-value">@Model.AvailableRooms</span>
+            <span class="stat-label">Available</span>
+        </div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-icon orange"><i class="fa fa-user-check"></i></div>
+        <div class="stat-info">
+            <span class="stat-value">@Model.OccupiedRooms</span>
+            <span class="stat-label">Occupied</span>
+        </div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-icon purple"><i class="fa fa-users"></i></div>
+        <div class="stat-info">
+            <span class="stat-value">@Model.TotalTenants</span>
+            <span class="stat-label">Total Tenants</span>
+        </div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-icon teal"><i class="fa fa-file-contract"></i></div>
+        <div class="stat-info">
+            <span class="stat-value">@Model.ActiveContracts</span>
+            <span class="stat-label">Active Contracts</span>
+        </div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-icon red"><i class="fa fa-exclamation-triangle"></i></div>
+        <div class="stat-info">
+            <span class="stat-value">@Model.ExpiringContracts</span>
+            <span class="stat-label">Expiring Soon</span>
+        </div>
+    </div>
+    <div class="stat-card wide">
+        <div class="stat-icon gold"><i class="fa fa-peso-sign"></i></div>
+        <div class="stat-info">
+            <span class="stat-value">₱@Model.MonthlyRevenue.ToString("N0")</span>
+            <span class="stat-label">Monthly Revenue</span>
+        </div>
+    </div>
+    <div class="stat-card wide">
+        <div class="stat-icon blue"><i class="fa fa-percent"></i></div>
+        <div class="stat-info">
+            <span class="stat-value">@Model.OccupancyRate%</span>
+            <span class="stat-label">Occupancy Rate</span>
+        </div>
+    </div>
+</div>
+
+<!-- Occupancy Bar -->
+<div class="dashboard-section mt-4">
+    <h5 class="section-title"><i class="fa fa-chart-bar"></i> Occupancy Overview</h5>
+    <div class="occupancy-bar-wrap">
+        <div class="occupancy-bar">
+            <div class="occupancy-fill"
+                 style="width: @Model.OccupancyRate%">
+                @Model.OccupancyRate%
+            </div>
+        </div>
+        <small>@Model.OccupiedRooms of @Model.TotalRooms rooms occupied</small>
+    </div>
+</div>
+
+<!-- Expiring Contracts -->
+@if (Model.ExpiringContractsList.Any())
+{
+    <div class="dashboard-section mt-4">
+        <h5 class="section-title text-warning">
+            <i class="fa fa-exclamation-triangle"></i> Contracts Expiring Within 30 Days
+        </h5>
+        <div class="table-responsive">
+            <table class="cp-table">
+                <thead>
+                    <tr>
+                        <th>Tenant</th>
+                        <th>Room</th>
+                        <th>End Date</th>
+                        <th>Days Left</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var c in Model.ExpiringContractsList)
+                    {
+                        var daysLeft = (c.EndDate - DateTime.Now).Days;
+                        <tr>
+                            <td>@c.Tenant?.FullName</td>
+                            <td>Room @c.Room?.RoomNumber</td>
+                            <td>@c.EndDate.ToString("MMM dd, yyyy")</td>
+                            <td>
+                                <span class="badge-warning">@daysLeft days</span>
+                            </td>
+                            <td>
+                                <a asp-controller="Contracts"
+                                   asp-action="Details"
+                                   asp-route-id="@c.Id"
+                                   class="btn-sm-action">View</a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+}

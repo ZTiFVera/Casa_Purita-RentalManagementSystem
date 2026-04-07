@@ -2,28 +2,31 @@
 
 namespace Casa_Purita_RentalManagementSystem.Models
 {
-    public enum RoomStatus { Available, Occupied, Maintenance }
-
     public class Room
     {
         public int Id { get; set; }
 
         [Required]
-        [Display(Name = "Unit Number")]
-        public string UnitNumber { get; set; } = string.Empty;
+        [Display(Name = "Room Number")]
+        public string RoomNumber { get; set; } = string.Empty;
 
         [Required]
-        public string Type { get; set; } = string.Empty; // Studio, 1BR, 2BR
+        [Display(Name = "Type")]
+        public string Type { get; set; } = string.Empty;
 
         [Required]
         [DataType(DataType.Currency)]
+        [Display(Name = "Monthly Rent (₱)")]
         public decimal MonthlyRent { get; set; }
 
-        public RoomStatus Status { get; set; } = RoomStatus.Available;
+        [Display(Name = "Floor")]
+        public int Floor { get; set; }
 
+        [Display(Name = "Description")]
         public string? Description { get; set; }
 
-        public DateTime CreatedAt { get; set; } = DateTime.Now;
+        [Display(Name = "Available")]
+        public bool IsAvailable { get; set; } = true;
 
         public ICollection<Contract> Contracts { get; set; } = new List<Contract>();
     }

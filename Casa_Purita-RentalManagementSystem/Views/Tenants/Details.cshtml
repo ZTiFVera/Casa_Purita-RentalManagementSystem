@@ -1,0 +1,99 @@
+﻿@model Tenant
+@{
+    ViewData["Title"] = "Tenant Details";
+}
+
+<div class="form-page">
+    <div class="form-card">
+        <div class="form-card-header">
+            <i class="fa fa-user"></i> Tenant Details – @Model.FullName
+        </div>
+        <div class="form-card-body">
+            <div class="detail-grid">
+                <div class="detail-item">
+                    <span class="detail-label">First Name</span>
+                    <span class="detail-value">@Model.FirstName</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Last Name</span>
+                    <span class="detail-value">@Model.LastName</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Email</span>
+                    <span class="detail-value">@Model.Email</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Phone</span>
+                    <span class="detail-value">@(Model.Phone ?? "N/A")</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Emergency Contact</span>
+                    <span class="detail-value">@(Model.EmergencyContact ?? "N/A")</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Address</span>
+                    <span class="detail-value">@(Model.Address ?? "N/A")</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Date Registered</span>
+                    <span class="detail-value">
+                        @Model.DateRegistered.ToString("MMM dd, yyyy")
+                    </span>
+                </div>
+            </div>
+
+            <!-- Contract History -->
+            @if (Model.Contracts != null && Model.Contracts.Any())
+            {
+                <h6 class="mt-4 section-title">
+                    <i class="fa fa-file-contract"></i> Contract History
+                </h6>
+                <div class="table-responsive">
+                    <table class="cp-table">
+                        <thead>
+                            <tr>
+                                <th>Room</th>
+                                <th>Start Date</th>
+                                <th>End Date</th>
+                                <th>Monthly Rent</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var c in Model.Contracts)
+                            {
+                                <tr>
+                                    <td>Room @c.Room?.RoomNumber</td>
+                                    <td>@c.StartDate.ToString("MMM dd, yyyy")</td>
+                                    <td>@c.EndDate.ToString("MMM dd, yyyy")</td>
+                                    <td>₱@c.MonthlyRent.ToString("N0")</td>
+                                    <td>
+                                        <span class="status-badge status-@c.Status.ToLower()">
+                                            @c.Status
+                                        </span>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+            else
+            {
+                <div class="empty-state mt-3">
+                    <i class="fa fa-file-contract"></i>
+                    <p>No contracts found for this tenant.</p>
+                </div>
+            }
+
+            <div class="form-actions mt-3">
+                <a asp-action="Edit" asp-route-id="@Model.Id" class="btn-primary-cp">
+                    <i class="fa fa-pen"></i> Edit
+                </a>
+                <a asp-action="Index" class="btn-secondary-cp">
+                    <i class="fa fa-arrow-left"></i> Back
+                </a>
+            </div>
+        </div>
+    </div>
+</div>

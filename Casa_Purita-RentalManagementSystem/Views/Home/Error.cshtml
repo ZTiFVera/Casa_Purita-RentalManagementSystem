@@ -1,0 +1,36 @@
+﻿@model ErrorViewModel
+@{
+    ViewData["Title"] = "Error";
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Error – Casa Purita</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" />
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+</head>
+<body class="auth-body">
+    <div class="auth-container">
+        <div class="auth-card text-center">
+            <div class="auth-logo">
+                <i class="fa fa-exclamation-triangle" style="color:#e74c3c;font-size:3rem;"></i>
+                <h2>Oops! Something went wrong.</h2>
+            </div>
+            @if (Model.ShowRequestId)
+            {
+                <p class="text-muted small">
+                    Request ID: <code>@Model.RequestId</code>
+                </p>
+            }
+            <a href="/" class="btn-auth mt-3">
+                <i class="fa fa-home"></i> Go Home
+            </a>
+        </div>
+    </div>
+</body>
+</html>

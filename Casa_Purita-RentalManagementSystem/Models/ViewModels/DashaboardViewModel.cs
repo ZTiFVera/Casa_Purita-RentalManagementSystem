@@ -3,13 +3,14 @@
     public class DashboardViewModel
     {
         public int TotalRooms { get; set; }
-        public int AvailableRooms { get; set; }
         public int OccupiedRooms { get; set; }
+        public int AvailableRooms { get; set; }
         public int TotalTenants { get; set; }
         public int ActiveContracts { get; set; }
-        public int ExpiringContracts { get; set; } // within 30 days
+        public int ExpiringContracts { get; set; }
         public decimal MonthlyRevenue { get; set; }
-        public List<Contract> RecentContracts { get; set; } = new();
+        public double OccupancyRate =>
+            TotalRooms == 0 ? 0 : Math.Round((double)OccupiedRooms / TotalRooms * 100, 1);
+        public List<Contract> ExpiringContractsList { get; set; } = new();
     }
- 
 }

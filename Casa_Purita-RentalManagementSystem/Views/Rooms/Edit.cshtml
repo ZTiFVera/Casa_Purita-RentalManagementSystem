@@ -1,0 +1,63 @@
+﻿@model Room
+@{
+    ViewData["Title"] = "Edit Room";
+}
+
+<div class="form-page">
+    <div class="form-card">
+        <div class="form-card-header">
+            <i class="fa fa-pen"></i> Edit Room @Model.RoomNumber
+        </div>
+        <div class="form-card-body">
+            <form asp-action="Edit" method="post">
+                <input asp-for="Id" type="hidden" />
+                <div asp-validation-summary="ModelOnly" class="auth-error mb-3"></div>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="RoomNumber" class="form-label"></label>
+                        <input asp-for="RoomNumber" class="form-control cp-input" />
+                        <span asp-validation-for="RoomNumber" class="text-danger small"></span>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="Type" class="form-label"></label>
+                        <select asp-for="Type" class="form-select cp-input">
+                            <option value="Studio">Studio</option>
+                            <option value="1BR">1 Bedroom</option>
+                            <option value="2BR">2 Bedroom</option>
+                            <option value="3BR">3 Bedroom</option>
+                        </select>
+                        <span asp-validation-for="Type" class="text-danger small"></span>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="MonthlyRent" class="form-label"></label>
+                        <input asp-for="MonthlyRent" class="form-control cp-input" />
+                        <span asp-validation-for="MonthlyRent" class="text-danger small"></span>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="Floor" class="form-label"></label>
+                        <input asp-for="Floor" class="form-control cp-input" />
+                        <span asp-validation-for="Floor" class="text-danger small"></span>
+                    </div>
+                    <div class="col-md-12 mb-3">
+                        <label asp-for="Description" class="form-label"></label>
+                        <textarea asp-for="Description" class="form-control cp-input" rows="3"></textarea>
+                    </div>
+                    <div class="col-md-12 mb-3">
+                        <div class="form-check">
+                            <input asp-for="IsAvailable" class="form-check-input" />
+                            <label asp-for="IsAvailable" class="form-check-label">Is Available</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-actions">
+                    <button type="submit" class="btn-primary-cp">
+                        <i class="fa fa-save"></i> Update Room
+                    </button>
+                    <a asp-action="Index" class="btn-secondary-cp">
+                        <i class="fa fa-arrow-left"></i> Cancel
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

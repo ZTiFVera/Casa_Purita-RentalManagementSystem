@@ -18,6 +18,15 @@ namespace Casa_Purita_RentalManagementSystem.Data
         {
             base.OnModelCreating(builder);
 
+            // Fix decimal precision warnings
+            builder.Entity<Contract>()
+                .Property(c => c.MonthlyRent)
+                .HasColumnType("decimal(18,2)");
+
+            builder.Entity<Room>()
+                .Property(r => r.MonthlyRent)
+                .HasColumnType("decimal(18,2)");
+
             builder.Entity<Room>().HasData(
                 new Room { Id = 1, RoomNumber = "101", Type = "Studio", MonthlyRent = 8000, Floor = 1, IsAvailable = true, Description = "Cozy studio unit" },
                 new Room { Id = 2, RoomNumber = "102", Type = "1BR", MonthlyRent = 12000, Floor = 1, IsAvailable = true, Description = "1 Bedroom unit" },

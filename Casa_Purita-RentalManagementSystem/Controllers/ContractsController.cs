@@ -1,4 +1,5 @@
 ﻿using Casa_Purita_RentalManagementSystem.Data;
+using Casa_Purita_RentalManagementSystem.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;

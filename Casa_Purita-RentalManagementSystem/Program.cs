@@ -2,6 +2,7 @@ using Casa_Purita_RentalManagementSystem.Data;
 using Casa_Purita_RentalManagementSystem.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Casa_Purita_RentalManagementSystem.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 

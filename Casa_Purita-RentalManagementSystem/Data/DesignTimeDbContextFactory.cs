@@ -8,7 +8,7 @@ namespace Casa_Purita_RentalManagementSystem.Data
         public ApplicationDbContext CreateDbContext(string[] args)
         {
             var optionsBuilder = new DbContextOptionsBuilder<ApplicationDbContext>();
-            optionsBuilder.UseSqlServer("Server=LAB4-PC35\\LAB2PC31;Database=CasaPuritaDb;Integrated Security=True;MultipleActiveResultSets=true;TrustServerCertificate=True");
+            optionsBuilder.UseSqlServer("Server=LAB1-PC46\\LAB2PC23;Database=CasaPuritaDb;Integrated Security=True;MultipleActiveResultSets=true;TrustServerCertificate=True");
 
             return new ApplicationDbContext(optionsBuilder.Options);
         }

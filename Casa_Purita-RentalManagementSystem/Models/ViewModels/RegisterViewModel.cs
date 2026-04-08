@@ -14,7 +14,9 @@ namespace Casa_Purita_RentalManagementSystem.Models.ViewModels
 
         [Required]
         [DataType(DataType.Password)]
-        [MinLength(6, ErrorMessage = "Password must be at least 6 characters.")]
+        [MinLength(8, ErrorMessage = "Password must be at least 8 characters.")]
+        [RegularExpression(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$",
+            ErrorMessage = "Password must contain uppercase, lowercase, and a number.")]
         public string Password { get; set; } = string.Empty;
 
         [Required]

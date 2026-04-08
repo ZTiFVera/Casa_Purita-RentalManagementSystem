@@ -11,13 +11,23 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
 {
     options.Password.RequireDigit = true;
-    options.Password.RequiredLength = 6;
+    options.Password.RequiredLength = 8;
     options.Password.RequireNonAlphanumeric = false;
-    options.Password.RequireUppercase = false;
-    options.Password.RequireLowercase = false;
+    options.Password.RequireUppercase = true;
+    options.Password.RequireLowercase = true;
+    options.Password.RequiredUniqueChars = 4;
+
+    options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(15);
+    options.Lockout.MaxFailedAccessAttempts = 5;
+    options.Lockout.AllowedForNewUsers = true;
+
+    options.User.RequireUniqueEmail = true;
 })
 .AddEntityFrameworkStores<ApplicationDbContext>()
-.AddDefaultTokenProviders();
+.AddDefaultTokenProviders()
+.AddPasswordValidator<CustomPasswordValidator<ApplicationUser>>();
+
+builder.Services.AddScoped<IPasswordHasher<ApplicationUser>, BCryptPasswordHasher<ApplicationUser>>();
 
 builder.Services.ConfigureApplicationCookie(options =>
 {
@@ -25,6 +35,7 @@ builder.Services.ConfigureApplicationCookie(options =>
     options.LogoutPath = "/Auth/Logout";
     options.AccessDeniedPath = "/Auth/Login";
     options.ExpireTimeSpan = TimeSpan.FromHours(8);
+    options.SlidingExpiration = true;
 });
 
 builder.Services.AddControllersWithViews();
